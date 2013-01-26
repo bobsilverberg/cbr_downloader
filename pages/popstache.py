@@ -11,9 +11,23 @@ from page import Page
 class PopstacheListPage(Page):
 
     _article_link_locator = (By.CSS_SELECTOR, 'a.read-more')
+    _first_article_in_sidebar_link_locator = (By.CSS_SELECTOR, '#mp3s a')
+    _prev_article_link_locator = (By.CSS_SELECTOR, 'ul.prev-next a[rel="prev"]')
+
+    @property
+    def base_url(self):
+        return 'http://popstache.com/free-mp3-download/'
 
     def go_to_page(self):
-        self.open('http://popstache.com/free-mp3-download/')
+        self.open(self.base_url)
+
+    @property
+    def first_article_in_sidebar_link(self):
+        return self.selenium.find_element(*self._first_article_in_sidebar_link_locator).get_attribute('href')
+
+    @property
+    def previous_article_link(self):
+        return self.selenium.find_element(*self._prev_article_link_locator).get_attribute('href')
 
     @property
     def article_links(self):

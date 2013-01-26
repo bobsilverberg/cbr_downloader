@@ -5,11 +5,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import pytest
-import requests
 from pages.coverme import CoverMeLandingPage, CoverMeArticlePage
+from test_base import TestBase
 
 
-class TestCoverMePage:
+class TestCoverMePage(TestBase):
 
     @pytest.mark.nondestructive
     def test_download_mp3s(self, mozwebqa):
@@ -17,7 +17,7 @@ class TestCoverMePage:
         coverme_page.go_to_page()
         all_links = coverme_page.article_links
         page_count = 1
-        while page_count < 20:
+        while page_count < 2:
             coverme_page.go_to_next_page()
             all_links += coverme_page.article_links
             page_count += 1
@@ -28,9 +28,5 @@ class TestCoverMePage:
         for link in all_links:
             article_page = CoverMeArticlePage(mozwebqa)
             article_page.go_to_page(link)
-            for mp3_link in article_page.mp3_links:
-                mp3_name = mp3_link.split('/')[-1]
-                headers['Referer'] = link
-                mp3 = requests.get(mp3_link, headers=headers)
-                with open(article_page.download_folder + mp3_name, "wb") as code:
-                    code.write(mp3.content)
+            if not self.grab_mp3(article_page.mp3_links, link, headers):
+                break

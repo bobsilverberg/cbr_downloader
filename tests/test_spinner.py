@@ -5,11 +5,11 @@
 # file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 import pytest
-import requests
 from pages.spinner import SpinnerLandingPage, SpinnerArticlePage
+from test_base import TestBase
 
 
-class TestSpinnerPage:
+class TestSpinnerPage(TestBase):
 
     @pytest.mark.nondestructive
     def test_download_mp3s(self, mozwebqa):
@@ -23,8 +23,5 @@ class TestSpinnerPage:
             article_page = SpinnerArticlePage(mozwebqa)
             article_page.go_to_page(link)
             mp3_link = article_page.mp3_link
-            mp3_name = mp3_link.split('/')[-1]
-            headers['Referer'] = link
-            mp3 = requests.get(mp3_link, headers=headers)
-            with open(article_page.download_folder + mp3_name, "wb") as code:
-                code.write(mp3.content)
+            if not self.grab_mp3([mp3_link], link, headers):
+                break

@@ -24,17 +24,10 @@ class Page(object):
     Base class for all Pages
     """
 
-    _download_folder = '/Users/bsilverberg/Downloads/'
-
     def __init__(self, testsetup):
         self.testsetup = testsetup
-        self.base_url = testsetup.base_url
         self.selenium = testsetup.selenium
         self.timeout = testsetup.timeout
-
-    @property
-    def download_folder(self):
-        return self._download_folder
 
     @property
     def is_the_current_page(self):
